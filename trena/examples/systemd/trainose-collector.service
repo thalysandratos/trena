@@ -1,0 +1,25 @@
+# Live collector as a service. Adjust User, paths and the data directory.
+# Install: sudo cp trainose-collector.service /etc/systemd/system/ && sudo systemctl daemon-reload
+#          sudo systemctl enable --now trainose-collector
+[Unit]
+Description=Railway live-data collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=trainose
+WorkingDirectory=/opt/trainose-collector
+ExecStart=/usr/bin/python3 -m collector \
+    --db /var/lib/trainose/trains.db \
+    --archive-dir /var/lib/trainose/archive \
+    --log-file /var/log/trainose/collector.log
+Restart=on-failure
+RestartSec=30
+# the collector shuts down gracefully on SIGTERM (final samples, checkpoint): give it time
+TimeoutStopSec=180
+# Uncomment for a run of fixed length (systemd then sends SIGTERM and the service ends cleanly):
+#RuntimeMaxSec=8d
+
+[Install]
+WantedBy=multi-user.target

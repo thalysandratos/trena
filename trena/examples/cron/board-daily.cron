@@ -1,0 +1,5 @@
+# One pass of the daily timetable puller from cron. Cron uses the machine's local time zone,
+# not Athens time; that is harmless: each pass fetches every day that is final by then, so a
+# run before 10:00 Athens time simply picks yesterday up on the next day.
+# (If your cron supports it, CRON_TZ=Europe/Athens makes the time below Athens time.)
+30 10 * * * cd /opt/trainose-collector && /usr/bin/python3 -m collector.board_daily --once --db /var/lib/trainose/board.db --start-date 2026-01-01 >> /var/log/trainose/board-daily.log 2>&1

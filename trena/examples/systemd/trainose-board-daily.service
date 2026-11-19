@@ -1,0 +1,22 @@
+# Daily timetable puller as a long-lived service (it sleeps until the next daily check).
+# Never ends unless --until is given. Adjust User, paths, and --start-date.
+[Unit]
+Description=Railway daily timetable puller
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=trainose
+WorkingDirectory=/opt/trainose-collector
+ExecStart=/usr/bin/python3 -m collector.board_daily \
+    --db /var/lib/trainose/board.db \
+    --start-date 2026-01-01 \
+    --log-file /var/log/trainose/board-daily.log
+# add "--until YYYY-MM-DD" to stop after that day; the service then ends by itself
+Restart=on-failure
+RestartSec=300
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target

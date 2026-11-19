@@ -1,0 +1,15 @@
+# One pass of the daily timetable puller, started by trainose-board-once.timer.
+[Unit]
+Description=Railway daily timetable pull (one pass)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=trainose
+WorkingDirectory=/opt/trainose-collector
+ExecStart=/usr/bin/python3 -m collector.board_daily --once \
+    --db /var/lib/trainose/board.db \
+    --start-date 2026-01-01
+# exit 3 means some final days failed and will be retried by the next run
+SuccessExitStatus=3

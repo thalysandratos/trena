@@ -1,0 +1,12 @@
+# Runs the one-pass puller every day. A day is final from 10:00 Athens time on the next day,
+# so 10:30 Athens time picks up yesterday's timetable.
+[Unit]
+Description=Daily railway timetable pull
+
+[Timer]
+OnCalendar=*-*-* 10:30:00 Europe/Athens
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target
